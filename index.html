@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Limite 35k — quanto ainda posso vender de cripto sem pagar IR</title>
+<meta name="description" content="Calcule quanto ainda falta para você estourar o limite de R$ 35.000 mensais de isenção de IR em criptoativos. Regime nacional. Mostra a conta linha a linha. Nada sai do seu navegador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#EDEEF0;
+  --paper-2:#E3E6EA;
+  --ink:#16202B;
+  --ink-soft:#4A5866;
+  --rule:#C3C9D1;
+  --stamp-ok:#1D6B54;
+  --stamp-no:#A32B1E;
+  --field:#F7F8F9;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",system-ui,sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  padding:0 20px 80px;
+  background-image:repeating-linear-gradient(180deg,transparent 0 31px,rgba(22,32,43,.045) 31px 32px);
+}
+.wrap{max-width:660px;margin:0 auto}
+
+header{padding:52px 0 28px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--ink-soft);margin:0 0 14px
+}
+h1{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;
+  font-size:clamp(30px,6.4vw,44px);line-height:1.06;margin:0 0 12px;letter-spacing:-.015em
+}
+.sub{margin:0;color:var(--ink-soft);font-size:15px;max-width:46ch}
+
+section{padding:30px 0;border-bottom:1px solid var(--rule)}
+h2{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:600;
+  letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+  margin:0 0 18px;display:flex;align-items:baseline;gap:10px
+}
+h2::after{content:"";flex:1;height:1px;background:var(--rule)}
+
+/* ledger */
+.row{display:grid;grid-template-columns:1fr 132px 36px;gap:10px;align-items:center;margin-bottom:8px}
+label.vis{font-size:13px;color:var(--ink-soft);display:block;margin-bottom:6px}
+select,input{
+  font-family:"IBM Plex Mono",monospace;font-size:15px;color:var(--ink);
+  background:var(--field);border:1px solid var(--rule);border-radius:0;
+  padding:11px 12px;width:100%;-webkit-appearance:none;appearance:none
+}
+select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='7'><path d='M0 0h10L5 7z' fill='%234A5866'/></svg>");background-repeat:no-repeat;background-position:right 12px center;padding-right:30px}
+input[type=text]{text-align:right}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--ink);outline-offset:1px}
+.del{
+  background:none;border:1px solid var(--rule);color:var(--ink-soft);cursor:pointer;
+  font-family:"IBM Plex Mono",monospace;font-size:16px;line-height:1;padding:11px 0;width:36px
+}
+.del:hover{border-color:var(--stamp-no);color:var(--stamp-no)}
+.add{
+  margin-top:6px;background:none;border:1px dashed var(--rule);color:var(--ink-soft);
+  font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+  padding:11px 16px;cursor:pointer;width:100%
+}
+.add:hover{border-color:var(--ink);color:var(--ink)}
+
+/* cliff gauge */
+.gauge{margin:26px 0 8px}
+.track{position:relative;height:46px;background:var(--paper-2);border:1px solid var(--rule)}
+.fill{position:absolute;left:0;top:0;bottom:0;background:var(--stamp-ok);width:0;transition:width .25s ease}
+.fill.over{background:var(--stamp-no)}
+.cliff{position:absolute;top:-7px;bottom:-7px;left:80%;width:2px;background:var(--ink)}
+.cliff::after{
+  content:"R$ 35.000";position:absolute;top:-19px;left:50%;transform:translateX(-50%);
+  font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.08em;white-space:nowrap;color:var(--ink)
+}
+.beyond{position:absolute;top:0;bottom:0;left:80%;right:0;background:repeating-linear-gradient(45deg,transparent 0 5px,rgba(163,43,30,.14) 5px 10px)}
+.scale{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:10px;color:var(--ink-soft);margin-top:7px}
+
+/* verdict */
+.verdict{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:26px}
+.stamp{
+  font-family:"IBM Plex Sans Condensed",sans-serif;font-weight:700;font-size:23px;letter-spacing:.06em;
+  border:3px solid var(--stamp-ok);color:var(--stamp-ok);padding:7px 16px;transform:rotate(-3.5deg);
+  text-transform:uppercase;flex:none
+}
+.stamp.no{border-color:var(--stamp-no);color:var(--stamp-no)}
+.headline{flex:1;min-width:210px}
+.big{font-family:"IBM Plex Mono",monospace;font-size:clamp(25px,5.6vw,34px);font-weight:600;letter-spacing:-.02em;display:block}
+.big.no{color:var(--stamp-no)}
+.cap{font-size:13px;color:var(--ink-soft)}
+
+/* math */
+.math{font-family:"IBM Plex Mono",monospace;font-size:13.5px;margin-top:4px}
+.math div{display:flex;justify-content:space-between;gap:14px;padding:7px 0;border-bottom:1px dotted var(--rule)}
+.math div:last-child{border-bottom:none;border-top:2px solid var(--ink);font-weight:600;margin-top:4px}
+.math .lbl{color:var(--ink-soft)}
+
+.note{font-size:13.5px;color:var(--ink-soft);border-left:3px solid var(--rule);padding:2px 0 2px 14px;margin:16px 0}
+.note.warn{border-left-color:var(--stamp-no)}
+.note strong{color:var(--ink)}
+
+details{border:1px solid var(--rule);padding:14px 16px;margin-top:14px;background:var(--field)}
+summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+details p{font-size:14px}
+
+.legal{font-size:12.5px;color:var(--ink-soft)}
+.legal p{margin:0 0 9px}
+.stampdate{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em}
+
+.support{text-align:center;padding:34px 0 0}
+.support a{
+  display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink);border:1px solid var(--ink);padding:11px 22px;text-decoration:none
+}
+.support a:hover{background:var(--ink);color:var(--paper)}
+.support p{font-size:13px;color:var(--ink-soft);max-width:40ch;margin:0 auto 16px}
+
+@media (max-width:520px){
+  .row{grid-template-columns:1fr 108px 36px}
+  body{padding:0 16px 60px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Regime nacional · Pessoa física</p>
+  <h1>Quanto ainda posso vender de cripto este mês sem pagar IR?</h1>
+  <p class="sub">A isenção de R$ 35.000 é tudo-ou-nada. Passou de R$ 35.000 em alienações no mês, mesmo que por R$ 1, e o lucro de todas as operações do mês vira tributável.</p>
+</header>
+
+<section>
+  <h2>Alienações deste mês</h2>
+  <p class="note">Não é só "vender por reais". Trocar BTC por ETH, converter para USDT e pagar algo com cripto também são alienações e consomem sua isenção.</p>
+  <div id="rows"></div>
+  <button class="add" id="add" type="button">+ Adicionar operação</button>
+</section>
+
+<section>
+  <h2>Onde você está</h2>
+  <div class="gauge">
+    <div class="track">
+      <div class="beyond"></div>
+      <div class="fill" id="fill"></div>
+      <div class="cliff"></div>
+    </div>
+    <div class="scale"><span>R$ 0</span><span>R$ 43.750</span></div>
+  </div>
+
+  <div class="verdict">
+    <div class="stamp" id="stamp">Isento</div>
+    <div class="headline">
+      <span class="big" id="big">R$ 35.000,00</span>
+      <span class="cap" id="cap">ainda cabem antes de você perder a isenção</span>
+    </div>
+  </div>
+
+  <div class="math" id="math"></div>
+</section>
+
+<section id="taxbox" hidden>
+  <h2>Se o mês fechar assim</h2>
+  <p class="note warn"><strong>A isenção foi perdida.</strong> O ganho de capital de todas as operações do mês passa a ser tributável, não só o que excedeu R$ 35.000.</p>
+  <label class="vis" for="lucro">Lucro total do mês (venda menos custo médio de aquisição)</label>
+  <input type="text" id="lucro" inputmode="decimal" placeholder="0,00">
+  <div class="math" id="taxmath" style="margin-top:16px"></div>
+  <p class="note">Recolhimento por DARF, código 4600, até o último dia útil do mês seguinte ao da alienação. O ganho vai na ficha de Ganhos de Capital (GCAP).</p>
+</section>
+
+<section>
+  <h2>Quando esta página não serve</h2>
+  <p class="note warn">Pare aqui e procure um contador se qualquer um destes for o seu caso:</p>
+  <details>
+    <summary>Opero em exchange estrangeira</summary>
+    <p>Desde a Lei 14.754/2023, ativos custodiados no exterior seguem regime próprio — alíquota de 15%, apuração anual na declaração, sem a isenção de R$ 35 mil. É outra conta, e a interação entre os dois regimes tem interpretações divergentes. Esta página não cobre isso.</p>
+  </details>
+  <details>
+    <summary>Faço P2P ou uso autocustódia acima de R$ 35 mil no mês</summary>
+    <p>A DeCripto (IN RFB 2.291/2025) substituiu a IN 1.888 em 1º de julho de 2026. Operações fora de exchange brasileira que somem mais de R$ 35 mil no mês exigem declaração mensal no sistema Coleta Nacional do e-CAC, até o último dia útil do mês seguinte. Isso é obrigação acessória e existe mesmo quando não há imposto a pagar.</p>
+  </details>
+  <details>
+    <summary>Recebo staking, airdrop, mineração ou rendimento de DeFi</summary>
+    <p>Não é ganho de capital, é outra natureza de rendimento, com tratamento próprio. Fora do escopo desta página.</p>
+  </details>
+  <details>
+    <summary>Sou pessoa jurídica</summary>
+    <p>A isenção de R$ 35 mil é exclusiva de pessoa física. PJ tributa conforme o regime da empresa, sem faixa isenta.</p>
+  </details>
+</section>
+
+<section class="legal">
+  <h2>Base e limites</h2>
+  <p><strong>Base legal:</strong> art. 22, II da Lei 9.250/1995 (isenção para alienações até R$ 35.000 no mês); art. 21 da Lei 8.981/1995 (alíquotas progressivas de ganho de capital); IN RFB 2.291/2025 (DeCripto).</p>
+  <p>A MP 1.303/2025, que acabaria com a isenção e criaria alíquota única de 17,5%, perdeu a validade em 8 de outubro de 2025 sem ser convertida em lei. As regras antigas continuam valendo. Boa parte do que está publicado na internet sobre 2026 está desatualizada nesse ponto.</p>
+  <p><strong>Isto é uma calculadora, não é consultoria tributária.</strong> A conta é mostrada linha a linha justamente para você conferir, não para você confiar. Quem responde pela apuração é você e seu contador.</p>
+  <p class="stampdate">Regras conferidas em 27/07/2026 · Nada digitado aqui sai do seu navegador · Sem cookies, sem servidor, sem conta</p>
+</section>
+
+<div class="support">
+  <p>Grátis e sem cadastro. Se economizou seu tempo, um café ajuda a manter a página atualizada quando a regra mudar.</p>
+  <a id="pix" href="https://mpago.la/2yJfuxq" target="_blank" rel="noopener">Pagar um café via Pix</a>
+</div>
+
+</div>
+<script>
+var LIMITE=35000, ESCALA=43750;
+var TIPOS=["Venda por reais","Troca por outra cripto","Conversão para stablecoin","Pagamento com cripto","Outra alienação"];
+var rows=document.getElementById("rows");
+
+function brl(n){return n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});}
+function parse(v){
+  v=(v||"").replace(/[^\d,.]/g,"");
+  if(v.indexOf(",")>-1){
+    v=v.replace(/\./g,"").replace(",",".");
+  }else if(/\.\d{3}$/.test(v)){
+    v=v.replace(/\./g,"");
+  }
+  var n=parseFloat(v);
+  return isFinite(n)&&n>0?n:0;
+}
+
+function addRow(){
+  var d=document.createElement("div");
+  d.className="row";
+  var opts=TIPOS.map(function(t){return "<option>"+t+"</option>";}).join("");
+  d.innerHTML='<select aria-label="Tipo de operação">'+opts+'</select>'+
+    '<input type="text" inputmode="decimal" placeholder="0,00" aria-label="Valor da operação">'+
+    '<button class="del" type="button" aria-label="Remover operação">&times;</button>';
+  d.querySelector(".del").onclick=function(){d.remove();calc();};
+  d.querySelector("input").oninput=calc;
+  rows.appendChild(d);
+  return d;
+}
+
+function calc(){
+  var total=0;
+  rows.querySelectorAll("input").forEach(function(i){total+=parse(i.value);});
+  var resta=LIMITE-total, over=total>LIMITE;
+
+  var pct=Math.min(total/ESCALA*100,100);
+  var fill=document.getElementById("fill");
+  fill.style.width=pct+"%";
+  fill.className="fill"+(over?" over":"");
+
+  var stamp=document.getElementById("stamp");
+  stamp.textContent=over?"Tributável":"Isento";
+  stamp.className="stamp"+(over?" no":"");
+
+  var big=document.getElementById("big"), cap=document.getElementById("cap");
+  big.className="big"+(over?" no":"");
+  if(over){
+    big.textContent=brl(total-LIMITE);
+    cap.textContent="acima do limite. A isenção do mês inteiro foi perdida.";
+  }else{
+    big.textContent=brl(resta);
+    cap.textContent=total===0?"ainda cabem antes de você perder a isenção":"ainda cabem antes de você perder a isenção";
+  }
+
+  document.getElementById("math").innerHTML=
+    '<div><span class="lbl">Alienações somadas no mês</span><span>'+brl(total)+'</span></div>'+
+    '<div><span class="lbl">Limite legal de isenção</span><span>'+brl(LIMITE)+'</span></div>'+
+    '<div><span class="lbl">'+(over?"Excedente":"Margem restante")+'</span><span>'+brl(Math.abs(resta))+'</span></div>';
+
+  document.getElementById("taxbox").hidden=!over;
+  imposto();
+}
+
+function imposto(){
+  var g=parse(document.getElementById("lucro").value), box=document.getElementById("taxmath");
+  if(g<=0){box.innerHTML='<div><span class="lbl">Informe o lucro para ver o imposto estimado</span><span>—</span></div>';return;}
+  var faixas=[[5e6,.15],[5e6,.175],[2e7,.20],[Infinity,.225]], rest=g, imp=0, html="";
+  for(var i=0;i<faixas.length&&rest>0;i++){
+    var base=Math.min(rest,faixas[i][0]), t=base*faixas[i][1];
+    imp+=t; rest-=base;
+    html+='<div><span class="lbl">'+(faixas[i][1]*100).toFixed(1).replace(".",",")+'% sobre '+brl(base)+'</span><span>'+brl(t)+'</span></div>';
+  }
+  box.innerHTML=html+'<div><span class="lbl">DARF estimada (código 4600)</span><span>'+brl(imp)+'</span></div>';
+}
+
+document.getElementById("add").onclick=function(){addRow().querySelector("input").focus();};
+document.getElementById("lucro").oninput=imposto;
+addRow();
+calc();
+</script>
+</body>
+</html>

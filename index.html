@@ -131,6 +131,28 @@ summary{cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12px;lett
 details p{font-size:14px}
 
 .legal{font-size:12.5px;color:var(--ink-soft)}
+
+/* seletor de regime */
+.opts{display:grid;gap:8px}
+.opt{
+  display:block;width:100%;text-align:left;cursor:pointer;
+  background:var(--field);border:1px solid var(--rule);padding:14px 16px;
+  font-family:"IBM Plex Sans",sans-serif;color:var(--ink)
+}
+.opt:hover{border-color:var(--ink-soft)}
+.opt[aria-pressed="true"]{border:2px solid var(--ink);background:var(--paper-2);padding:13px 15px}
+.opt b{display:block;font-size:15.5px;font-weight:600;margin-bottom:3px}
+.opt span{display:block;font-size:13px;color:var(--ink-soft);font-family:"IBM Plex Mono",monospace}
+.verdict-regime{
+  margin-top:20px;border-left:3px solid var(--stamp-no);padding:4px 0 4px 16px;
+}
+.verdict-regime.ok{border-left-color:var(--stamp-ok)}
+.verdict-regime b{display:block;font-family:"IBM Plex Sans Condensed",sans-serif;font-size:21px;margin-bottom:6px}
+.verdict-regime.ok b{color:var(--stamp-ok)}
+.verdict-regime:not(.ok) b{color:var(--stamp-no)}
+.facts{font-family:"IBM Plex Mono",monospace;font-size:13.5px;margin-top:16px}
+.facts div{display:flex;justify-content:space-between;gap:14px;padding:8px 0;border-bottom:1px dotted var(--rule)}
+.facts .lbl{color:var(--ink-soft)}
 .legal p{margin:0 0 9px}
 .stampdate{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em}
 
@@ -157,6 +179,20 @@ details p{font-size:14px}
   <h1>Quanto ainda posso vender de cripto este mês sem pagar IR?</h1>
   <p class="sub">A isenção de R$ 35.000 é tudo-ou-nada. Passou de R$ 35.000 em alienações no mês, mesmo que por R$ 1, e o lucro de todas as operações do mês vira tributável.</p>
 </header>
+
+<section>
+  <h2>Primeiro: onde estão seus criptoativos?</h2>
+  <p class="note">Desde a Lei 14.754/2023 existem dois regimes completamente diferentes, e a isenção de R$ 35 mil só vale em um deles. Errar aqui é o engano mais caro do assunto.</p>
+  <div class="opts">
+    <button class="opt" type="button" data-r="nac" aria-pressed="false"><b>Exchange brasileira</b><span>Mercado Bitcoin, Foxbit, Bitso, NovaDAX</span></button>
+    <button class="opt" type="button" data-r="nac" aria-pressed="false"><b>Carteira própria (autocustódia)</b><span>Ledger, Trezor, MetaMask — sem intermediário</span></button>
+    <button class="opt" type="button" data-r="ext" aria-pressed="false"><b>Exchange estrangeira</b><span>Binance, Coinbase, OKX, Bybit, Kraken, KuCoin</span></button>
+    <button class="opt" type="button" data-r="mix" aria-pressed="false"><b>Uso mais de uma, ou não sei</b><span>Combinação das opções acima</span></button>
+  </div>
+  <div id="rverdict" hidden></div>
+</section>
+
+<div id="bloco-nac" hidden>
 
 <section>
   <h2>Alienações deste mês</h2>
@@ -195,6 +231,31 @@ details p{font-size:14px}
   <div class="math" id="taxmath" style="margin-top:16px"></div>
   <p class="note">Recolhimento por DARF, código 4600, até o último dia útil do mês seguinte ao da alienação. O ganho vai na ficha de Ganhos de Capital (GCAP).</p>
 </section>
+
+</div><!-- /bloco-nac -->
+
+<div id="bloco-ext" hidden>
+<section>
+  <h2>Regime exterior — o que se aplica a você</h2>
+  <div class="facts">
+    <div><span class="lbl">Isenção de R$ 35.000</span><span>não existe</span></div>
+    <div><span class="lbl">Alíquota</span><span>15% fixos</span></div>
+    <div><span class="lbl">Apuração</span><span>anual, em 31/12</span></div>
+    <div><span class="lbl">Base</span><span>lucros menos prejuízos do ano</span></div>
+    <div><span class="lbl">Pagamento</span><span>na declaração anual</span></div>
+  </div>
+  <p class="note">O imposto entra na ficha de Aplicações Financeiras no Exterior da declaração anual, não em DARF mensal. Prejuízos do ano compensam lucros do ano livremente — o que às vezes é melhor que o regime nacional, onde a compensação é mais restrita.</p>
+  <p class="note warn"><strong>Se você vinha aplicando a isenção de R$ 35 mil em operações de exchange estrangeira, a apuração provavelmente está errada.</strong> Na declaração de 2025 mais de 250 mil contribuintes caíram na malha fina por inconsistências em criptoativos. Vale revisar os anos-base a partir de 2024 com um contador.</p>
+  <details>
+    <summary>Uso a Binance — e ela tem operação no Brasil</summary>
+    <p>A Binance tem entidade brasileira e plataforma global. O que define o regime é onde os ativos estão efetivamente custodiados, não a existência de CNPJ no país. Se estão na plataforma global, é regime exterior. Este é um ponto com interpretações divergentes entre contadores, e é exatamente o tipo de caso em que vale pagar por uma opinião profissional em vez de seguir um site.</p>
+  </details>
+  <details>
+    <summary>Por que a autocustódia é diferente</summary>
+    <p>Ativos custodiados pelo próprio contribuinte residente no Brasil, sem participação de intermediário, não são considerados localizados no exterior (Lei 14.754/2023, art. 3º, § 3º; IN RFB 2.180/2024, art. 9º, § 2º). Carteira própria segue o regime nacional, mesmo que as moedas tenham vindo de uma exchange estrangeira.</p>
+  </details>
+</section>
+</div><!-- /bloco-ext -->
 
 <section>
   <h2>Quando esta página não serve</h2>
@@ -305,6 +366,25 @@ function imposto(){
   }
   box.innerHTML=html+'<div><span class="lbl">DARF estimada (código 4600)</span><span>'+brl(imp)+'</span></div>';
 }
+
+var TXT={
+  nac:['ok','Regime nacional','A isenção de R$ 35.000 mensais vale para você. Apuração mensal, alíquotas progressivas de 15% a 22,5%, DARF código 4600 até o último dia útil do mês seguinte.'],
+  ext:['','Regime exterior','A isenção de R$ 35.000 <strong>não vale</strong> para você. É outro regime, com outra alíquota, outra periodicidade e outro lugar na declaração.'],
+  mix:['','Os dois regimes, separadamente','Você precisa apurar cada lado por conta própria: as operações em exchange estrangeira seguem o regime exterior e <strong>não entram</strong> na soma dos R$ 35.000. Só o que for exchange brasileira ou carteira própria conta para o limite. Misturar os dois é o erro mais comum.']
+};
+
+function setRegime(r,btn){
+  document.querySelectorAll(".opt").forEach(function(b){b.setAttribute("aria-pressed", b===btn?"true":"false");});
+  var t=TXT[r], v=document.getElementById("rverdict");
+  v.hidden=false;
+  v.className="verdict-regime"+(t[0]?" ok":"");
+  v.innerHTML="<b>"+t[1]+"</b>"+t[2];
+  document.getElementById("bloco-nac").hidden = (r==="ext");
+  document.getElementById("bloco-ext").hidden = (r==="nac");
+}
+document.querySelectorAll(".opt").forEach(function(b){
+  b.onclick=function(){setRegime(b.dataset.r,b);};
+});
 
 document.getElementById("add").onclick=function(){addRow().querySelector("input").focus();};
 document.getElementById("lucro").oninput=imposto;
